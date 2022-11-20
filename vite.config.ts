@@ -12,7 +12,7 @@ export default defineConfig((config) => {
           version,
           license,
           homepage,
-          match: 'https://example.com'
+          match: 'https://*.notion.site/*'
         },
         server: {
           port: 3000

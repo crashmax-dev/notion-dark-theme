@@ -1,19 +1,32 @@
 import { domReady, observeElement } from '@zero-dependency/dom'
-import { STYLES } from './constants.js'
 
 domReady().then(() => {
-  observeElement(document.body, () => {
-    const allElements = document.querySelectorAll<HTMLElement>('*')
-    for (const el of allElements) {
-      for (const [styleKey, styleValues] of Object.entries(STYLES)) {
-        // @ts-ignore
-        const style: string = el.style[styleKey]
-        const darkStyle = styleValues[style]
-        if (style && darkStyle) {
-          // @ts-ignore
-          el.style[styleKey] = darkStyle
-        }
-      }
-    }
-  })
+  const enableDarkTheme = toggleTheme()
+  observeElement(document.body, () => enableDarkTheme())
 })
+
+function toggleTheme() {
+  const ctrlShiftL = new KeyboardEvent('keydown', {
+    key: 'l',
+    keyCode: 76,
+    code: 'KeyL',
+    which: 76,
+    shiftKey: true,
+    ctrlKey: true,
+    metaKey: false
+  })
+
+  return () => {
+    try {
+      const theme = localStorage.getItem('theme')
+      if (!theme) return
+
+      const { mode } = JSON.parse(theme)
+      if (mode === 'light') {
+        window.dispatchEvent(ctrlShiftL)
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+}
